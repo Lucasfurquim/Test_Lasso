@@ -1,0 +1,345 @@
+%
+% File: chap02.tex
+% Author: Ricardo Furquim
+% Description: ??
+%
+\let\textcircled=\pgftextcircled
+\chapter{Statistical Methods}
+\label{chap:SM}
+\initial{A}s detailed on chapter \ref{chap:intro}, under Markowitz' assumptions, optimal investing consists on applying  eq. (\ref{solution_maxmin}). Risk-premium and covariance matrix, however, are not directly observable. Both needs to be estimated through an statistical model. Moreover, the kind of prediction error you should expect is deeply model-dependent. On this chapter we are going to briefly detail statistical methods for estimating risk-premium and variance.  
+% \include{images/Circulos}
+
+\begin{figure}[H]
+\centering
+\begin{minipage}[b]{0.45\textwidth}
+\centering
+\scalebox{.7}{\input{images/CirculoLL}}
+\caption{Low bias, low variance \label{CirculoLL}}
+\end{minipage}
+\hfill
+\begin{minipage}[b]{0.45\textwidth}
+\centering
+\scalebox{.7}{\input{images/CirculoHL}}
+\caption{High bias, low variance \label{CirculoHL}}
+\end{minipage}
+\begin{minipage}[b]{0.45\textwidth}
+\centering
+\scalebox{.7}{\input{images/CirculoLH}}
+\caption{Low bias, high variance \label{CirculoLH}}
+\end{minipage}
+\hfill
+\begin{minipage}[b]{0.45\textwidth}
+\centering
+\scalebox{.7}{\input{images/CirculoHH}}
+\caption{High bias, high variance \label{CirculoHH}}
+\end{minipage}
+\end{figure}
+
+As detailed on \cite{sammut2011encyclopedia}, selecting statistical models and estimating parameters are always subject to two kind of error: bias and variance. The more complex the model you use to fit your data, the better your results over \textit{in-sample}data, but the bigger the risk of over-fitting and getting poor results on \textit{out-of-sample} data. We are always restricted by a bias-variance trade-off.
+\begin{figure}[H]
+\centering
+\begin{minipage}[b]{0.65\textwidth}
+\includegraphics[width=\textwidth]{biasvar.png}
+\caption{MSE and bias-variance trade off.}
+\end{minipage}
+\end{figure}
+%###############################################################################
+%                       GLS
+%###############################################################################
+\section{GLS - Generalized least square}
+\label{sec:sec2.1}
+%Ta quase o da wikipedia; juro que procurei melhores mas ficavam mt tecnicos e os caralho. Mas mudei bastante o texto e pa!
+Generalized Least Squares (GLS) was first described by Alexander Aiken in 1934 (\cite{aitkin1935least}). This technique allows estimating the unknown parameters in a linear regression model even when there is a certain degree of correlation between the residuals. It is relevant to reinforce that in those cases the  ordinary least squares and weighted least squares can be statistically inefficient, or even give misleading inferences.
+
+Consider a typical linear regression problem: $\{y_i , x_{ij}\}_{i=1,...,n}$ is the observed data; with $y = (y1, . . . ,yn)^T$  and $X = (x_{1}^{T}, . . . ,x_{n}^{T} )^T$ being,respectively, the response and the predictor values vectors.
+
+The model assumes that the conditional mean of $y$ given $X$ is a linear function of $X$, whereas the conditional variance of the error term given $X$ is a known nonsingular matrix $\Omega$. In mathematical terms:
+\begin{align}
+    y = X\beta + \epsilon, \quad
+    \mathbb{E}{[\epsilon|X]} = 0, \quad 
+    Var[\epsilon|X] = \Omega
+\end{align}
+where $\beta \in \mathbb{R}^k$ is the regression coefficient (a vector of unkown constants that must be estimated from the data).
+
+GLS estimates $\beta$ by minimizing the squared Mahalanobis length (\cite{de2000mahalanobis}) of the residual vector:
+\begin{align}
+         \hat{\beta}_{GLS} &= argmin\left( (y -X\beta) \Omega^{-1} (y -X\beta)   \right) \label{beta_gls}
+\end{align}
+Since the objective is a quadratic form in $\beta$, the estimator has thus an explicit formula:
+\begin{align}
+     \hat{\beta}_{GLS} = (X^T \Omega^{-1} X)^{-1} X^{T} \Omega^{-1} y
+\end{align}
+
+The GLS is unbiased, consistent, efficient, and asymptotically normal:
+\begin{align}
+     \sqrt{n}(\hat{\beta} - \beta) \xrightarrow{d} \mathcal{N}\left( 0, (X^T\Omega^{-1}X)^{-1} \right) 
+\end{align}
+
+One can notice that GLS is equivalent to applying ordinary least squares to a linearly transformed version of the data. Intuition for the previous sentence can be found by factorizing $\Omega = CC^T$, using, for instance Cholesky decomposition (\cite{hazewinkel2001cholesky}). Then, multiplying the original equation by $C^{-1}$ we obtain the equivalent linear model $y^{*} = X^{*}$ , where $y^{*} = C^{-1}y$, $X^{*} = C^{-1}X$ and $\epsilon^{*} = C^{-1} \epsilon $. In this new model, $ Var[\epsilon^{*}|X] = C^{-1}\Omega(C^{-1})^T = I $ (the identity matrix) and $\beta$ can thus be estimated by Ordinary Least Squares (OLS), which requires the same minimization as in equation (\ref{beta_gls}).
+
+This has the effect of standardizing the scale of the errors and “de-correlating” them. Since OLS is applied to data with homoscedastic errors, the Gauss–Markov theorem (\cite{odell1983gauss}) applies, and therefore the GLS is the best linear unbiased estimator for $\beta$. For a more mathematical and detailed approach please refer to \cite{aitkin1935least} and \cite{wooldridge2015introductory}.
+
+\subsection{Feasible GLS - FGLS }
+
+Instead of assuming the structure of heteroskedasticity, we may estimate the structure of
+heteroskedasticity from OLS. This method is called Feasible GLS (FGLS). First, we
+estimate $\hat{\Omega}$ from OLS, and, second, we use $\hat{\Omega}$ instead of $\Omega$:
+\begin{align}
+         \hat{\beta}_{GLS} = (X^T \hat{\Omega}a^{-1} X)^{-1} X^{T} \hat{\Omega}^{-1} y
+\end{align}\label{beta_fgls}
+There are many ways to estimate FGLS. One flexible approach is discussed in \cite{wooldridge2015introductory}.
+
+%n escrevi mt, pq achei q n precisava, mas da pra esticar usando http://www3.grips.ac.jp/~yamanota/Lecture_Note_10_GLS_WLS_FGLS.pdf ; http://www.biostat.jhsph.edu/~iruczins/teaching/jf/ch5.pdf e http://homepage.ntu.edu.tw/~ckuan/pdf/et01/et_Ch4.pdf
+%###############################################################################
+%                       RIDGE
+%###############################################################################
+\section{Ridge Regression}
+\label{sec:sec2.2}
+A ridge regression is an ordinary least squares estimation, with a constraint on the sum of the squared coefficients. One of the original motivations for the ridge regression was to ensure matrix invertibility when estimating a linear regression. However, it is most frequently used to reduce the variance of parameter estimates. 
+The constraint is applied to the regression through the value chosen for the tuning parameter $\lambda$. As $\lambda$
+increases the regression parameters $\beta_1$, . . . ,$\beta_p$ are forced to smaller values with lower variance. Some explanatory variables may be completely excluded from the model as their parameters are forced to zero. 
+
+The choice of $\lambda$ can be made through minimizing prediction error or cross validation. A ridge regression estimation is dependent upon the scale and intercept of the model. As a consequence, variables are typically centered and standardized prior to model estimation.
+
+The original publication of the ridge regression was Hoerl and Kennard
+(1970)(\cite{hoerl1970ridge}), and discussions can be found in several texts (\cite{friedman2010regularization}; \cite{younker2012ridge}). There are several variations of the
+classical ridge regression. These often involve multiple $\lambda$’s or different approaches to
+the standardization of the explanatory variables. 
+
+In mathematical terms, the classical ridge regression estimator can be defined as:
+\begin{align}
+     \hat{\beta}_{Ridge} &= argmin\left( \sum_{i=1}^{n} (Y_i - \sum_{j=1}^{p} {X_{ij} \beta_j})^2 + \lambda\sum_{j=1}^p \beta_j^2\right) \label{beta_ridge}
+\end{align}
+Equation \ref{beta_ridge} is equivalent to:
+\begin{align}
+     \hat{\beta}_{Ridge} &= argmin\left( \sum_{i=1}^{n} (Y_i - \sum_{j=1}^{p} {X_{ij} \beta_j})^2 \right)
+\end{align}
+subject to $\sum_{j=1}^p \beta_j^2 \leq s^*$, with $s^*$ having an one-to-one correspondence to $\lambda$.
+ Moreover, it is equivalent to:
+\begin{align}
+    \hat{\beta}_{Ridge} &= (X^T X + \lambda I)^{-1} X^T Y \label{beta_ridge_matrix}
+\end{align}
+
+From (\ref{beta_ridge_matrix})  one can see that a ridge regression can be expressed as
+modifying an OLS by adding $\lambda$ to variance terms in the variance-covariance matrix of
+the explanatory variables. This modification impacts both the variance and covariance
+terms in the variance-covariance matrix, but disproportionately down weights
+the covariance terms.
+
+As the ridge regression is equivalent to applying a prior to
+beta parameters with zero covariance and positive variance (refer to
+\cite{hoerl1970ridge} and \cite{friedman2010regularization}), the ridge estimation also reduces the impact of the covariance terms between explanatory variables. Intuition for the previous sentence can be found by considering the variance-covariance
+matrix for OLS parameters $\left(\sigma^2 (X^T X)^{-1} \right)$. 
+
+Unlike OLS, the ridge estimator relies on a tuning parameter $\lambda$. The choice of this
+tuning parameter can pose a dilemma. Like any model parameter, the choice is an
+attempt to minimize a loss function, such as mean squared error which is unobservable.
+As a consequence there are several commonly used criteria that people use
+as an approximation. Examples include: minimize forecast error and various cross
+validation approaches; with Generalized Cross Validation being a common choice.
+
+%=======
+\section{LASSO - Least absolute shrinkage and selection operator}
+\label{sec:sec2.3}
+
+A lasso regression is very similar to a ridge regression. The difference is that the constraint is applied to the sum of absolute parameter estimates rather than the sum of their squares. 
+
+This minor difference has significant repercussions in terms of
+the resulting estimates. Due to the absolute penalty, the lasso is less sensitive to the standardization of explanatory variables and has a stronger tendency
+to push coefficients to zero, giving a easier interpretable model (\cite{tibshirani1996regression}).
+
+The lasso estimator is defined as:
+
+\begin{align}
+          \hat{\beta}_{Lasso} &= argmin\left( \sum_{i=1}^{n} (Y_i - \sum_{j=1}^{p} {X_{ij} \beta_j})^2 + \lambda\sum_{j=1}^p |\beta_j|\right) \label{beta_lasso}
+\end{align}
+
+that is equivalent to:
+\begin{align}
+     \hat{\beta}_{Lasso} &=  argmin\left( \sum_{i=1}^{n} (Y_i - \sum_{j=1}^{p} {X_{ij} \beta_j})^2 \right)
+\end{align}
+subject to $\sum_{j=1}^p |\beta_j|^2 \leq t$, where $t > 0$ is a tuning parameter which controls the amount of shirnkage applied to the estimates. Smaller values of $t$ (larger valeus of $\lambda$) result intuitively in more zero $\beta$ coefficients. 
+
+For a more detailed analysis and a historic review of the method refer to, respectively, to \cite{tibshirani1996regression} and \cite{tibshirani2011regression}
+
+%=======
+
+\section{ALASSO - Adaptive LASSO}
+\label{sec:sec2.5}
+
+Fan and Li (\cite{fan2001variable}) studied a class of penalization methods including the lasso
+one. They showed that the lasso method leads to estimators that may suffer an
+appreciable bias. Furthermore they conjectured that the oracle properties do not
+hold for the lasso. Hence Zou (\cite{zou2006adaptive}) proposes to consider the following modified
+lasso criterion, called adaptive lasso:
+
+\begin{align}
+              \hat{\beta}_{ALasso} &= \left(\sum_{i=1}^{n} (Y_i - {X_{i}^{T} \beta})^2 + { \lambda_{n} \sum_{j=1}^{p} \frac{|\beta_j|}{|\tilde{\beta}_j|^\gamma} } \right) \label{beta_alasso}
+\end{align}
+
+where $(\tilde{\beta}_1$, . . . , $\tilde{\beta}_p)^T$ denotes a preliminary estimate of $\beta_0$ (the ones estimated by OLS $\hat{\beta}^{ols}$, for instance ).
+
+This modification allows to produce sparse solutions more effectively than lasso. Precisely, Zou (\cite{zou2006adaptive}) shows that the adaptive lasso enjoys the \textbf{oracle properties}.
+
+
+     \textbf{DEFINITION :} Denote by $\hat{\beta}(\delta)$ the coefficient estimator produced by a fitting
+procedure $\delta$. We call $\delta$ an oracle procedure if $\hat{\beta}(\gamma)$ (asymptotically) has the following oracle properties:
+\begin{itemize}
+     \item Identifies the right subset model, $\{j : \hat{\beta}_j \neq 0\} = \mathcal{A}$ 
+     \item Has the optimal estimation rate,
+     $\sqrt{n}\left(\hat{\beta}_{\mathcal{A}} -\hat{\beta}_{\mathcal{A}^{*}} \right) \xrightarrow{d} \mathcal{N}(0,{\sum}^*) $, where ${\sum}*$ is the covariance matrix knowing the true subset model
+\end{itemize}
+
+
+\section{Elastic net}
+\label{sec:sec2.4}
+
+Although the lasso has shown success in many situations, it has some limitations. Consider
+the following three scenarios.
+\begin{enumerate}[label=(\alph*)]
+     
+     \item In the "$p>n$" case (high-dimensional data with few examples), the lasso selects at most n variables before it saturates, because of the nature of the convex optimization problem. This seems to be a limiting feature for a variable selection method. Moreover, the lasso is not well defined unless the bound on the L1-norm of the coefficients is smaller than a certain value.
+     \item If there is a group of variables among which the pairwise correlations are very high, then the lasso tends to select only one variable from the group and does not care which one is selected.
+     \item For usual "$n>p$" situations, if there are high correlations between predictors, it has been empirically observed that the prediction performance of the lasso is dominated by ridge regression (\cite{tibshirani1996regression}).
+\end{enumerate}
+
+Hui Zou and Trevor Hastie proposed then in their paper \cite{zou2005regularization}) a new regularization:  the elastic net. This new technique aims to work as well as the lasso whenever the lasso does the best, and fix the problems that were highlighted above, i.e. it should mimic the ideal variable selection method in scenarios (a) and (b), especially with microarray data, and it should deliver better prediction performance than the lasso in scenario (c).
+
+Similar to the lasso, the elastic net simultaneously does automatic variable selection and continuous shrinkage, and it can select groups of correlated variables. In the authors words "it is like a stretchable fishing net that retains ‘all the big fish’". Simulation studies and real data examples show that the elastic net often outperforms the lasso in terms of prediction accuracy.
+
+Mathematically, the elastic net adds a quadratic part to the LASSO's classical penalty:
+
+\begin{align}
+       \hat{\beta}_{ENet} &= argmin \left(|y - X\beta|^{2} + \lambda_{2}|\beta|^{2} + \lambda_{1}|\beta|_{1} \right),
+\end{align}
+where $|\beta|^{2}  = \sum_{j=1}^{p} {\beta_{j}^{2}}$ and $|\beta|_{1} = \sum_{j=1}^{p} |\beta_j| $
+
+%wikipedia part:
+
+Notice that this quadratic part makes the loss function strictly convex, and it therefore has a unique minimum. Also observe that the method includes the lasso and ridge regression ($\lambda _{2}=0$ and $\lambda_{1} = 0$ respectively). To understand better the relations among those methods, please observe the Figure \ref{Penalisations} that shows the penalty contour of those techniques.
+
+\begin{figure}[!h]
+\begin{minipage}[b]{1.0\textwidth}
+    \centering
+    \input{images/Norms_porra.tex}
+	\caption{ ( in black, the shape of the RIDGE penalty;red, contour of the
+ENet penalty; blue, contour of the elastic LASSO with$\lambda_1 = \lambda_2= 0.5$): we see that singularities at the vertices
+and the edges are strictly convex.
+\label{Penalisations}}
+\end{minipage}
+\end{figure}
+
+
+The naive version of elastic net method finds an estimator in a two-stage procedure : first for each fixed $\lambda _{2}$ it finds the ridge regression coefficients, and then does a lasso type shrinkage. This two-stage procedure (a ridge-type direct shrinkage followed by a lasso-type thresholding) can be view at Figure \ref{Weights_lines} . Besides, the figure shows the operational characteristics of the three penalization methods in an orthogonal design, which helps to gain a more intuitive comprehension of the methods.
+
+
+\begin{figure}[!ht]
+\begin{minipage}[b]{1.0\textwidth}
+    \centering
+    \input{images/ExactSolutionsLucas.tex}
+	\caption{Exact solutions for the lasso, ridge and the naive elastic net in an orthogonal design: the shrinkage parameters are $\lambda_1 = 2$ and $\lambda_2 = 1$ 
+    	\label{Weights_lines}}
+\end{minipage}
+\end{figure}
+
+This kind of estimation incurs,though, a double amount of shrinkage, which leads to increased bias and poor predictions. To improve the prediction performance, the authors rescale the coefficients of the naive version of elastic net by multiplying the estimated coefficients by $(1 + \lambda_2)$ (\cite{zou2005regularization}). For a deeper description of this optimization and the implementations please refer to \cite{zou2005regularization} and\cite{friedman2010regularization}.
+
+
+
+
+%=======
+
+\section{ARMA - Autoregressive moving average}
+\label{sec:sec2.6}
+
+%brow, basicamente fiz um resumao desse cara aqui:
+%https://www.quantstart.com/articles/Autoregressive-Moving-Average-ARMA-p-q-Models-for-Time-Series-Analysis-Part-1
+%https://www.quantstart.com/articles/Autoregressive-Moving-Average-ARMA-p-q-Models-for-Time-Series-Analysis-Part-2
+%https://www.quantstart.com/articles/Autoregressive-Moving-Average-ARMA-p-q-Models-for-Time-Series-Analysis-Part-3
+
+Since ARMA is a mixed model, having a basic knowledge about the autoregressive and the moving average models is fundamental to obtain a complete understanding of ARMA behaviour and applications. Considering that, we show at the next subsubsections quick reviews of those models main concepts.
+\subsection{Autoregressive (AR) Models}
+The autoregressive model is basically an extension of the random walk that includes terms further back in time, it is essentially a regression model where the previous terms are the predictors.
+
+\textbf{DEFINITION :} A time series model, ${x_t}$, is an autoregressive model of order $p$, AR(p), if:
+
+\begin{align}
+     x_t &= \alpha_{1} x_{t-1} + ... + \alpha_{p} x_{t-p} + \omega_t
+\end{align}
+\begin{align}
+     x_t &= \sum_{i=1}^{p}{\alpha_{i}x_{t-i}} + \omega_t
+\end{align}
+where $\{ \omega_t \}$ is white noise and $ \alpha_{i} \in \mathbb{R} $, with $\alpha _p \neq 0$ for a $p$-order autoregressive process.
+It is thus straightforward to make predictions with the AR(p) model, for any time $t$, as once we have the $\alpha_i$ coefficients determined, our estimate simply becomes:
+\begin{align}
+   \hat{x}_t &= \alpha_{1} x_{t-1} + ... + \alpha_{p} x_{t-p}
+\end{align}
+Hence we can make n-step ahead forecasts by producing $\hat{x}_{t}$, . . . ,$\hat{x}_{t+n}$.
+
+\subsection{Moving Average (MA) Models}
+A Moving Average model is similar to an Autoregressive model, except that instead of being a linear combination of past time series values, it is a linear combination of the past white noise terms.Intuitively, this means that the MA model sees such random white noise "shocks" directly at each current value of the model. This is in contrast to an AR(p) model, where the white noise "shocks" are only seen indirectly, via regression onto previous terms of the series.
+
+\textbf{DEFINITION :} $\{x_t\}$ is a moving average model of order $q$, MA(q), if:
+\begin{align}
+     x_t &= \omega_{t} + \beta_{1}\omega_{t-1}+...+ \beta_{q}\omega_{t-q}
+\end{align}
+where ${\omega_t}$ is white noise with $\mathbb{E}(\omega_t) = 0$ and variance $\sigma^2$.
+
+Now that we have considered autoregressive processes and moving average processes, we know that:
+\begin{itemize}
+     \item The former model considers its own past behavior as inputs for the model and as such attempts to capture market participant effects, such as momentum and mean-reversion in stock trading.
+     \item The latter model is used to characterize "shock" information to a series, such as a surprise earnings announcement or unexpected event.
+\end{itemize}
+
+An ARMA model attempts, hence, to capture both of these aspects when modeling financial time series.
+
+The ARMA(p,q) model is a linear combination of two linear models and thus is itself still linear:
+
+\textbf{DEFINITION :} A time series model, $\{x_t\}$, is an autoregressive moving average model of order $p,q$, ARMA(p,q), if:
+\begin{align}
+     x_t &= \alpha_{1} x_{t-1} + ... + \alpha_{p} x_{t-p} + \omega_t + \beta_{1}\omega_{t-1}+...+ \beta_{q}\omega_{t-q}
+\end{align}
+\begin{align}
+     x_t &= \sum_{i=1}^{p}{\alpha_{i} x_{t-i}}+ \sum_{i=1}^{q}{\beta_{i} x_{t-i}} + \omega_t 
+\end{align}
+
+
+where ${\omega_t}$ is white noise with $\mathbb{E}(\omega_t) = 0$ and variance $\sigma^2$.
+
+We can straightforwardly see that by setting $p \neq 0$ and $q=0$ we recover the AR(p) model. Similarly if we set $p=0$ and $q\neq0$ we recover the MA(q) model.
+
+One of the key features of the ARMA model is that it is parsimonious and redundant in its parameters. That is, an ARMA model will often require fewer parameters than an AR(p) or MA(q) model alone. Note also that an ARMA model does not take into account volatility clustering, a key empirical phenomena of many financial time series.
+
+%=======
+
+\section{GARCH - Generalized autoregressive conditional heteroskedasticity}
+\label{sec:sec2.7}
+
+%veio tudo daqui https://www.researchgate.net/profile/Reinaldo_Crispiniano_Garcia/publication/3267364_A_GARCH_Forecasting_Model_to_Predict_Day-Ahead_Electricity_Prices/links/02faf4f33ba157a4d7000000/A-GARCH-Forecasting-Model-to-Predict-Day-Ahead-Electricity-Prices.pdf
+
+The Autoregressive Conditional Heteroskedastic (ARCH) class of models was introduced by Engle (\cite{engle1982autoregressive}) to accommodate the possibility of serial correlation in volatility.  The ARCH(q) model considers the conditional variance as time dependent $Var(\omega_t|\omega_{t-1}) = h_t$.
+
+\begin{align}
+     h_t &= c + \sum^{q}_{i=1}{\alpha_i}{\omega_{t-i}^{2}}
+\end{align}
+
+The Generalized AutoRegressive Conditional Heteroskedasticity (GARCH) is an extended ARCH model proposed by Bollerslev (\cite{bollerslev1986generalized}) where $\omega_{t}^{2}$ takes the form:
+\begin{align}
+     \omega_{t}^{2} &= \nu_{t}^{2}h_t
+\end{align}
+where $\sigma_{\nu}^{2} = 1 $ is basically a white noise process and, more important:
+\begin{align}
+     h_t &= c + \sum_{i=1}^{p}\alpha^{'}_{i}h_{t-1} + \sum_{i=1}^{q}\beta^{'}_{i}\omega_{t-1}^{2} \label{eq_arch_garch}
+\end{align}
+
+
+As it can be easily seen from (\ref{eq_arch_garch}), any GARCH model where $p=0$, i.e., a GARCH(0,q) , becomes an ARCH(q) model. Therefore, in a GARCH model, as it incorporates mean reversion, the dynamics of $\omega_{t}^{2}$ can then be explained through past volatility shocks $\omega_{t-i}^{2}$.
+
+For a more detailed and mathematical approach of ARCH and GARCH models refer to \cite{engle2001garch} and \cite{brockwell2016introduction}.
+
+
+
+
+
+
+%=========================================================
