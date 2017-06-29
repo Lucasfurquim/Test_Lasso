@@ -1,0 +1,141 @@
+%
+% File: chap01.tex
+% Author: Victor F. Brena-Medina
+% Description: Introduction chapter where the biology goes.
+%
+\let\textcircled=\pgftextcircled
+\chapter{Introduction}
+\label{chap:intro}
+
+\initial{A} substantial part of the innovation explosion we have been experiencing is propelled by the surge on computational capabilities, allied with better statistical models and more efficient algorithms. The core objective of this paper is to analyze the performance of learning and forecasting methods on a new context: financial market. First we present the portfolio allocation framework. On chapter \ref{chap:SM} we briefly describe each forecasting algorithm. Finally on chapter \ref{chap:EA} we merge both domains and we discuss the performance of these algorithms on real data.  
+
+\medskip Before digging on abstract concepts and models, we want to reinforce what Paul Wilmott and Emanuel Derman explain on their manifesto (\cite{derman2009financial}) : quantitative finance and applied mathematics are related, but must not be handled on the same manner. On their words "Building financial models is challenging and worthwhile: you need to combine the qualitative and the quantitative, imagination and observation, art and science, all in the service of finding approximate patterns in the behavior of markets and securities". Financial modelers must never forget, no matter how elegant or complex a model is, "we has not created the world, and it doesn't satisfy our equations".
+% \initial{T}he surge on computational capabilities allied with statistical models and more efficient algorithms has been transforming science fiction into reality. Self-driven cars and smart robots are now part of our lives. This paper analyzes  a few decades ago into reality.  propelling the development on several domains. On this paper, we are going to present the portfolio allocation Datamining,   
+% \paragraph{} Before starting to dig 
+% \initial{Q}uantitative Finance and mathematics are related, but must never be handled on the same manner.  "Building financial models is challenging and worthwhile: you need to combine the qualitative and the quantitative, imagination and observation, art and science, all in the service of finding approximate patterns in the behavior of markets and securities" TODO(citar Emanuel Derman e paul wilmot). But we, financial modelers, must never forget that there is no "right model" and that "we did not created the world, and it doesn't satisfy our equations".
+% \medskip and mathematics are linked domains. On both we state assumptions, create models and strive to describe and understand the world. But we must never forget that   to describe  and  similar and controversial worlds. On both we use logics to estimate and  assert  and statistics to  It is   different and controversial worlds. It   is a controversial world.  normally seen as an unpredictable world where the more information you can guess, the more money you get. In this random scenario, market players are constantly seeking more robust and efficient methods to allocate wealth. First, we will briefly explain the main ideas
+%=======
+\section{Portfolio Allocation}
+\label{sec:sec1.1}
+Quantitative portfolio allocation methods usually follows a similar template (\cite{markowitz1952portfolio}, \cite{bodie2008investments}, \cite{ang2014asset}, \cite{langlois2017rational}). The idea is to maximize your \textbf{preference metric}, subject to your \textbf{constraints}, considering your \textbf{view of the world}. So, before we define an investment strategy, we should ask some questions:
+\begin{enumerate}
+\item \textbf{Preference metric:} What do I care about? What do I want to maximize? What is my investment horizon? Will a outflow of capital be necessary during my investment horizon? Do I like risks or I prefer to avoid them? If I do not like risks, how much would make me bear a given risk?
+\item \textbf{Constraints:} Do I have legal constraints? Financial constraints? What is the universe of assets/instruments available for me? May I leverage my investments? Sell short? 
+\item \textbf{View of the world:} Markets are inefficient? How returns are generated? 
+\end{enumerate}
+
+% are generated. The preference metric usually is represented via a utility function. The constraints dictates your investment set, which instruments and which kind of strategy you may invest on. Your view of the world encompass how returns are generated, market efficiency and.
+
+%preference metric, financial constraints, how asset returns are generated 
+
+\subsection{Utility function}
+Functions usually may be seen as a mathematical entity that transforms inputs in outputs. In our framework, the utility function $U(v)$, as the name suggests, transform investor's final wealth $(v)$ on the utility of this wealth. Although this function may change a lot for different investors, they  should take into account at least two concepts:
+
+\begin{enumerate}
+\item \textbf{Return:} Any rational rational investor prefers more money than less. The utility is a increasing function, the utility of $10$ million dollar is expected to be bigger than the utility of $10$ bucks.
+\begin{align*}
+	\frac{\partial U}{\partial v} \geq 0
+\end{align*}
+\item \textbf{Risks:} If a rational investor has to chose between two different opportunities with the same expected return, which one would he/she prefer? 
+\begin{itemize}
+\item Investment \textbf{A} offers a certain return $r_{CE}$;
+\item Investment \textbf{B} offers a stochastic return $r_B$ with mean $\mathbb{E}[r_B] = r_{CE}$ and variance $\sigma_B^2 > 0$; 
+\end{itemize}
+
+The answer depends on investor's level of risk aversion:
+\begin{itemize}
+\item \textrm{Risk Averse:} Investor prefers investment \textbf{A} because you have the same expected payoff, but no risk. This behavior implies a \textbf{concave} utility function: $\frac{\partial^2 U}{\partial v^2} < 0$; 
+\item \textrm{Risk Neutral:} Investor is indifferent as both opportunities have the same expected payoff: $\frac{\partial^2 U}{\partial v^2} = 0$;
+\item \textrm{Risk Seeking:} Investor prefers investment \textbf{B}, as it has the same expected return of A and provides a non null probability of getting better returns: $\frac{\partial^2 U}{\partial v^2} \geq 0$;
+\end{itemize}
+\end{enumerate}
+Considering this framework an interesting question arises: why a risk-averse investor would invest on risky assets? How much would he/she demand for bearing risks? The answer of these questions defines the \textbf{certainty equivalent}. 
+
+\subsection{Certainty Equivalent and mean-variance preference}
+Defining $\overline{V}_T := \mathbb{E} \: [V_T]$ and applying Taylor's formula around $\overline{V}_T$, we get
+\begin{align}
+	U(V_{T}) &\simeq U(\overline{V}_T) + U'(\overline{V}_T) \enspace (V_T - \overline{V}_T) + \frac{1}{2} \: \: U''(\overline{V}_T) \enspace (V_T - \overline{V}_T)^2  \nonumber \\
+	\mathbb{E} \: [U(V_{T})] &\simeq U(\overline{V}_T) + \frac{1}{2} \: \: U''(\overline{V}_T) \enspace  \sigma^2_{V_T}, \quad \textrm{with} \enspace \sigma^2_{V_T} := \mathbb{E} \: \left[ (V_T - \overline{V}_T)^2 \right]   \label{eq:bruder1}
+\end{align}
+Applying the mean value theorem (\cite{rudin1987real}), there exist $p > 0$ such that $U(\overline{V}_T - p) = \mathbb{E} \: [U(V_T)]$. Intuitively, we define the certainty equivalent of $V_T$ as $V_{eq} := \mathbb{E} \: [V_T] - p$.
+Using again Taylor's expansion: 
+\begin{align}
+	U(\overline{V}_T - p) &\simeq U(\overline{V}_T) - p \: U'(\overline{V}_T ) \label{eq:bruder2}
+\end{align}
+Combining equations \ref{eq:bruder1} and \ref{eq:bruder2}:
+\begin{align}
+	p = \frac{1}{2} \: \sigma_{V_T}^2 \: A(\overline{V}_T), \textrm{where} \enspace A(\overline{V}_T) := \: - \: \frac{U''(\overline{V}_T)}{U'(\overline{V}_T)}
+\end{align}
+Considering a constant risk-aversion $A = A(\overline{V}_T)$, we finally get the \textbf{mean variance preference:} on this framework, maximize the expected utility is equivalent to the following problem:
+\begin{align}
+	\max \enspace \left\{ \mathbb{E}\:[V_T] - \frac{A}{2} \: \sigma_{V_T}^2 \right\} \label{maxmim}
+\end{align}
+\begin{figure}[H]
+\begin{minipage}[b]{1.0\textwidth}
+    \centering
+    \input{images/Wealthy.tex}
+	\caption{ Wealthy
+\label{Wealthy}}
+\end{minipage}
+\end{figure}
+\section{Markowitz Portfolio Selection}
+Now we are almost ready define the optimization problem we want to solve, i.e. determining the best investment for a given investor. But first we need to consider the following definitions and assumptions:
+\begin{itemize}
+\item Investment universe: $n$ risky assets $S_{t}^{i}, \: \:  i \in \{ 1, .., n \}$, with known initial prices $S^i_0$, but random returns $r_i = S_T^i / S_0^i $. One risk-free asset $S^0_t$, which grows at a known constant rate $r_f = S^0_T / S^0_0$;
+\item Discrete time horizon: we invest all our initial wealth ($V_0$) at $t=0$ and we hold the portfolio until $t=T$. We allocate a proportion $w_i$ of our wealth in each risk asset, and $1 - \sum_{i=0}^n w_i$ on the risk-free asset. The \textbf{strategy} is defined by the vector of weights $w$.
+\item Self-financing portfolio: there is no inflow or outflow of capital between $t=0$ and $t=T$.
+\item The expectation of returns $\mathbb{E} [r]$ and its covariance matrix $\Sigma$ exists and are finite;
+\item The risk premium vector is, by definition, $\mu = \mathbb{E}[r] - r_f$;
+\item Constant absolute risk aversion $A$;
+\end{itemize}
+
+\begin{figure}[H]
+\begin{minipage}[b]{1.0\textwidth}
+    \centering
+    \input{images/Hiperbole.tex}
+	\caption{ Hiperbole
+\label{Hiperbole}}
+\end{minipage}
+\end{figure}
+
+\subsection{Maximizing Mean-Variance metric}
+% The mean-variance preference means that we want to maximize our expected utility of the portfolio's return $\mathbb{E}[U(r_p)]$ subject to a maximum acceptable variance ($\mathbb{V}ar[r_p] \leq \sigma^2_*$). This convex-optimization problem is, according to Khun-Tucker theorem, equivalent of the maximization problem: 
+
+Under the aforesaid assumptions and definitions, we may write the total return of the portfolio $r_P := V_T/V_0$ as:
+\begin{align}
+	r_P = V_T/V_0 &= \sum_{i=0} ^n w_i \: r_i + \left( 1 - \sum_{i=0}^n w_i \right) \: r_f \nonumber \\
+    	&= r +  \sum_{i=0}^n w_i \: (r_i - r_f )   \nonumber \\  
+        &= r + w^T \: (r - r_f )\nonumber
+\end{align}
+Then,
+\begin{align}
+\mathbb{E}[r_P] = r_f + &w^T \: \mu \quad \textmd{and}  \quad  \mathbb{V}ar[r_P] =  w^T \: \Sigma \: w 
+\end{align}
+Rewriting problem \ref{maxmim}, 
+\begin{align}
+w^* := &\arg \underset{w}{\max} \quad \mathbb{E}[r_p] - \frac{1}{2} \: A \: \mathbb{V}ar[r_p]   \nonumber \\
+&\arg \underset{w}{\max} \quad r_f + w^T \: \mu  - \frac{1}{2} \: A \:  w^T \: \Sigma \: w \nonumber 
+\end{align}
+Finally, we may find that "the best strategy" is determined by:
+\begin{align}
+w^* = &\frac{\Sigma^{-1} \: \mu }{A}  \label{solution_maxmin}
+\end{align}
+\subsection{Out-of-sample Portfolio Selection Procedure  } \label{sub:systematicApproach} 
+Looking at equation \ref{solution_maxmin}, investing seems a quite straightforward job. You just have three tasks:
+\begin{itemize}
+\item Determine your level of risk aversion $A$;
+\item Estimate the correlation matrix $\Sigma$; 
+\item Estimate the risk premium vector.
+\end{itemize}
+But, in practice, those tasks are not as simple as they may appear at first glance. Risk aversion is a discretionary decision, but it may changes over time. Covariance matrix may present singularities and heteroskedasticity. And last but not least, to estimate the risk premium we usually need to rely on a time-series predictive model:
+\begin{align}
+	r_{t+1} - r_{f,t+1} &= \mu + \theta \: X_t + \epsilon_{t+1} \label{pred:model}
+\end{align}
+Where, $\left(r_{t+1} \right)_{t \in \mathbb{N}} $ is the vector of returns on t, which is know only on $t+1$. $\left(r_{f,t+1} \right)_{t \in \mathbb{N}}$ is the risk-free rate on for period $t+1$ known at time $t$. $X_t$ are all available predictors at time $t$ and $\theta$ its predictive coefficients. We are going to analyze statistical methods we may use to solve this problem on chapter \ref{chap:SM}.        
+
+
+
+
+
+
+
