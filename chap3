@@ -1,0 +1,481 @@
+%% capitulo 4 
+% cv, norm, lambda, dev
+% lasso, ridge, enet, alasso
+%comeco capitulo 2 - latex
+
+% File: chap04.tex
+% Author: Ricardo Furquim MEU PAU
+% Description: ??
+%
+\let\textcircled=\pgftextcircled
+\chapter{Empirical Application}
+\label{chap:EA}
+
+\initial{A}s highlighted on chapter \ref{chap:intro}, our investment strategy (section \ref{sub:systematicApproach}) depends on the statistical approach  we chose for estimating parameters. Although we have several different methods, real data does not have to comply \cite{derman2009financial}. In this chapter we analyze the performance of our investment strategy on historical data using the statistical methods we brifly discussed on chapter \ref{chap:SM}. 
+% TO do: --> Fazer resumao do que já explicamos e falar que agr eh o pega pra capar.. que qualquer modelo funciona sob suas "assumptions", mas como citado na introdução: "o mundo nao precisa seguir nosssas equaçoes"(chega a ser profundo..)
+% --> Descrever os dados e preditores utilizados
+% --> Descrever a estratégia (só falar que eh mes por mes.. sempre seguindo a equaçao lá da alocaçao dos recurssos e partir pros resultados)
+%=======
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Index %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}[H]
+\centering
+\begin{minipage}[b]{0.45\textwidth}
+\includegraphics[width=\textwidth]{GARCH/Index-195001.png}
+\caption{S\&P index from January 1871 up to January 1950.  \label{Garch_Index_1950}}
+\end{minipage}
+\hfill
+\begin{minipage}[b]{0.45\textwidth}
+\includegraphics[width=\textwidth]{GARCH/Index-201511.png} \caption{S\&P index from January 1871 up to December 2015. \label{Garch_Index_2015}}
+\end{minipage}
+\end{figure}
+
+\section{Data}
+We considered monthly returns of S\&P index from January 1871 up to December 2015. We also considered a several predictors: 
+TODO:Cite data source (ask Prof. Langlois)
+\begin{itemize}
+\item \textbf{log(DP)}: Log dividend-price ratio:   log of the 12-month moving sum of dividends paid divided by the price.
+\item \textbf{log(DY)}: Log dividend yield: log of the 12-month moving sum of dividends divided by the lagged price.
+\item \textbf{log(EP)}: Log earnings-price ratio:  log of the 12-month moving sum of earnings divided by the price.
+\item \textbf{log(DE)}: Log dividend-payout ratio: log of the 12-month moving sum of dividends divided by the 12-month moving sum of earnings.
+\item \textbf{SVAR}: Stock variance:  monthly sum of squared daily returns.
+\item \textbf{BM}: Book-to-market ratio: ratio of the accounting book value to the market price.
+\item \textbf{NTIS}: Net equity expansion:  ratio of the 12-month moving sum of net equity issues to the total end-of-year market capitalization of the market.
+\item \textbf{TBL}: Treasury bill rate:  interest rate on a three-month Treasury bill (secondary market).
+\item \textbf{LTY}: Long term yield: long-term government bond yield.
+\item \textbf{LTR}: Long-term retur: return on long-term government bonds.
+\item \textbf{TMS}: Term spread: long-term yield minus the Treasury bill rate.
+\item \textbf{DFY}: Default yield spread:  difference between BAA- and AAA-rated corporate bond yields.
+\item \textbf{DFR}: Default return spread: long-term corporate bond return minus the long term government bond return.
+\item \textbf{INFL}: Inflation: We use 1-month lagged inflation to account for the delay in CPI releases.
+\end{itemize}
+
+\section{Returns: Time series approach}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%      						GARCH
+% Index
+% Ret
+% CondSV
+% ACF-RET
+% ACF-RET2
+% ACF-RET-ABS
+% CC
+% EMP-DIST
+% qqplot
+% STD-ACF-RES
+% STD-ACF-RES2
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Ret %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}[H]
+\centering
+\begin{minipage}[b]{0.45\textwidth}
+\includegraphics[width=\textwidth]{GARCH/Ret-195001.png}
+\caption{Index return and with 2 conditional standard deviations from January 1871 up to January 1950. \label{Garch_Ret_1950}}
+\end{minipage}
+\hfill
+\begin{minipage}[b]{0.45\textwidth}
+\includegraphics[width=\textwidth]{GARCH/Ret-201511.png}
+\caption{Index return and with 2 conditional standard deviations from January 1871 up to January 1950.   \label{Garch_Ret_2015}}
+\end{minipage}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% CondSV %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}[H]
+\centering
+\begin{minipage}[b]{0.45\textwidth}
+\includegraphics[width=\textwidth]{GARCH/CondSV-195001.png}
+\caption{GARCH Conditional volatility vs |returns| from  from January 1871 up to January 1950.   \label{Garch_CondSV_1950}}
+\end{minipage}
+\hfill
+\begin{minipage}[b]{0.45\textwidth}
+\includegraphics[width=\textwidth]{GARCH/CondSV-201511.png}
+\caption{GARCH Conditional volatility vs |returns| from  from January 1871 up to December 2015.    \label{Garch_CondSV_2015}}
+\end{minipage}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% ACF-RET %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}[H]
+\centering
+\begin{minipage}[b]{0.45\textwidth}
+\includegraphics[width=\textwidth]{GARCH/ACF-RET-195001.png}
+\caption{ACF of returns from January 1871 up to January 1950. \label{Garch_ACF-RET_1950}}
+\end{minipage}
+\hfill
+\begin{minipage}[b]{0.45\textwidth}
+\includegraphics[width=\textwidth]{GARCH/ACF-RET-201511.png}
+\caption{ACF of returns from January 1871 up to December 2015.  \label{Garch_ACF-RET_2015}}
+\end{minipage}
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% ACF-RET2 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}[H]
+\centering
+\begin{minipage}[b]{0.45\textwidth}
+\includegraphics[width=\textwidth]{GARCH/ACF-RET2-195001.png}
+\caption{ACF of squared returns from January 1871 up to January 1950. \label{Garch_ACF-RET2_1950}}
+\end{minipage}
+\hfill
+\begin{minipage}[b]{0.45\textwidth}
+\includegraphics[width=\textwidth]{GARCH/ACF-RET2-201511.png}
+\caption{ACF of squared returns from January 1871 up to December 2015.  \label{Garch_ACF-RET2_2015}}
+\end{minipage}
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% ACF-RET-ABS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}[H]
+\centering
+\begin{minipage}[b]{0.45\textwidth}
+\includegraphics[width=\textwidth]{GARCH/ACF-RET-ABS-195001.png}
+\caption{ACF of absolute returns from January 1871 up to January 1950. \label{Garch_ACF-RET-ABS_1950}}
+\end{minipage}
+\hfill
+\begin{minipage}[b]{0.45\textwidth}
+\includegraphics[width=\textwidth]{GARCH/ACF-RET-ABS-201511.png}
+\caption{ACF of absolute returns from January 1871 up to December 2015.  \label{Garch_ACF-RET-ABS_2015}}
+\end{minipage}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% CC %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}[H]
+\centering
+\begin{minipage}[b]{0.45\textwidth}
+\includegraphics[width=\textwidth]{GARCH/CC-195001.png}
+\caption{Cross correlation from January 1871 up to January 1950. \label{Garch_CC_1950}}
+\end{minipage}
+\hfill
+\begin{minipage}[b]{0.45\textwidth}
+\includegraphics[width=\textwidth]{GARCH/CC-201511.png}
+\caption{Cross correlation from January 1871 up to December 2015.  \label{Garch_CC_2015}}
+\end{minipage}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% EMP-DIST %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}[H]
+\centering
+\begin{minipage}[b]{0.45\textwidth}
+\includegraphics[width=\textwidth]{GARCH/EMP-DIST-195001.png}
+\caption{Empirical Density of Standardized Residuals from January 1871 up to January 1950.  \label{Garch_EMP-DIST_1950}}
+\end{minipage}
+\hfill
+\begin{minipage}[b]{0.45\textwidth}
+\includegraphics[width=\textwidth]{GARCH/EMP-DIST-201511.png}
+\caption{Empirical Density of Standardized Residuals from January 1871 up to December 2015.  \label{Garch_EMP-DIST_2015}}
+\end{minipage}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% qqplot %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}[H]
+\centering
+\begin{minipage}[b]{0.45\textwidth}
+\includegraphics[width=\textwidth]{GARCH/qqplot-195001.png}
+\caption{QQPlot for Standardized Residuals from January 1871 up to January 1950. \label{Garch_qqplot_1950}}
+\end{minipage}
+\hfill
+\begin{minipage}[b]{0.45\textwidth}
+\includegraphics[width=\textwidth]{GARCH/qqplot-201511.png}
+\caption{QQPlot for Standardized Residuals from January 1871 up to December 2015.   \label{Garch_qqplot_2015}}
+\end{minipage}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% STD-ACF-RES %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}[H]
+\centering
+\begin{minipage}[b]{0.45\textwidth}
+\includegraphics[width=\textwidth]{GARCH/STD-ACF-RES-195001.png}
+\caption{ACF of Standardized Residuals from January 1871 up to January 1950. \label{Garch_STD-ACF-RES_1950}}
+\end{minipage}
+\hfill
+\begin{minipage}[b]{0.45\textwidth}
+\includegraphics[width=\textwidth]{GARCH/STD-ACF-RES-201511.png}
+\caption{ACF of Standardized Residuals from January 1871 up to January 1950  \label{Garch_STD-ACF-RES_2015}}
+\end{minipage}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% STD-ACF-RES2 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}[H]
+\centering
+\begin{minipage}[b]{0.45\textwidth}
+\includegraphics[width=\textwidth]{GARCH/STD-ACF-RES2-195001.png}
+\caption{ACF of Squared Standardized Residuals from January 1871 up to January 1950. \label{Garch_STD-ACF-RES2_1950}}
+\end{minipage}
+\hfill
+\begin{minipage}[b]{0.45\textwidth}
+\includegraphics[width=\textwidth]{GARCH/STD-ACF-RES2-201511.png}
+\caption{ACF of Squared Standardized Residuals from January 1871 up to December 2015.  \label{Garch_STD-ACF-RES2_2015}}
+\end{minipage}
+\end{figure}
+
+TODO: Colocar a tabela dos testes statiticos do garch aqui
+
+\section{Portfolio performance}
+
+\begin{table}[ht!]
+\centering
+%     \csvautobooktabular{tables/results_table.csv}
+    \csvautobooktabular{tables/haaa.csv}
+    \caption{Results table}
+    \label{tab:results}
+\end{table}
+
+
+TODO: Colocar a tabela dos CE usando o GARCH pra prever a variancia
+
+
+\section{Risk premium: a machine learning approach}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%      						LASSO
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{LASSO}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% CV %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}[H]
+\centering
+\begin{minipage}[b]{0.45\textwidth}
+\includegraphics[width=\textwidth]{fig/LASSO_195001_cv.png}
+\caption{Cross validation for monthly data from Jan-1871 up to Jan-1950. \label{LASSO_cv_1950}}
+\end{minipage}
+\hfill
+\begin{minipage}[b]{0.45\textwidth}
+\centering
+\includegraphics[width=\textwidth]{fig/LASSO_201511_cv.png}
+\caption{Cross validation for monthly data from Jan-1871 up to Dec-2015. \label{LASSO_cv_2015}}
+\end{minipage}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% NORM %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}[H]
+\centering
+\begin{minipage}[b]{0.45\textwidth}
+\includegraphics[width=\textwidth]{fig/LASSO_195001_norm.png}
+\caption{Coefficients vs $\mathbb{L}_1$-norm for LASSO model using data from Jan-1871 up to Jan-1950. \label{LASSO_norm_1950}}
+\end{minipage}
+\hfill
+\begin{minipage}[b]{0.45\textwidth}
+\centering
+\includegraphics[width=\textwidth]{fig/LASSO_201511_norm.png}
+\caption{Coefficients vs $\mathbb{L}_1$-norm for LASSO model using data from Jan-1871 up to Dec-2015. \label{LASSO_norm_2015}}
+\end{minipage}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% LAMBDA %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}[H]
+\centering
+\begin{minipage}[b]{0.45\textwidth}
+\includegraphics[width=\textwidth]{fig/LASSO_195001_lambda.png}
+\caption{LASSO lambda 1950 \label{LASSO_lambda_1950}}
+\end{minipage}
+\hfill
+\begin{minipage}[b]{0.45\textwidth}
+\centering
+\includegraphics[width=\textwidth]{fig/LASSO_201511_lambda.png}
+\caption{LASSO lambda 2015. \label{LASSO_lambda_2015}}
+\end{minipage}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% DEV %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}[H]
+\centering
+\begin{minipage}[b]{0.45\textwidth}
+\includegraphics[width=\textwidth]{fig/LASSO_195001_dev.png}
+\caption{Coefficients vs explained variance for LASSO model using data from Jan-1871 up to Jan-1950. \label{LASSO_dev_1950}}
+\end{minipage}
+\hfill
+\begin{minipage}[b]{0.45\textwidth}
+\centering
+\includegraphics[width=\textwidth]{fig/LASSO_201511_dev.png}
+\caption{Coefficients vs explained variance for LASSO model using data from Jan-1871 up to Dec-2015. \label{LASSO_dev_2015}}
+\end{minipage}
+\end{figure}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%      						RIDGE
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{RIDGE}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% CV %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}[H]
+\centering
+\begin{minipage}[b]{0.45\textwidth}
+\includegraphics[width=\textwidth]{fig/RIDGE_195001_cv.png}
+\caption{RIDGE cv 1950. \label{RIDGE_cv_1950}}
+\end{minipage}
+\hfill
+\begin{minipage}[b]{0.45\textwidth}
+\centering
+\includegraphics[width=\textwidth]{fig/RIDGE_201511_cv.png}
+\caption{RIDGE cv 2015. \label{RIDGE_cv_2015}}
+\end{minipage}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% NORM %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}[H]
+\centering
+\begin{minipage}[b]{0.45\textwidth}
+\includegraphics[width=\textwidth]{fig/RIDGE_195001_norm.png}
+\caption{RIDGE norm 1950. \label{RIDGE_norm_1950}}
+\end{minipage}
+\hfill
+\begin{minipage}[b]{0.45\textwidth}
+\centering
+\includegraphics[width=\textwidth]{fig/RIDGE_201511_norm.png}
+\caption{RIDGE norm 2015. \label{RIDGE_norm_2015}}
+\end{minipage}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% LAMBDA %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}[H]
+\centering
+\begin{minipage}[b]{0.45\textwidth}
+\includegraphics[width=\textwidth]{fig/RIDGE_195001_lambda.png}
+\caption{RIDGE lambda 1950. \label{RIDGE_lambda_1950}}
+\end{minipage}
+\hfill
+\begin{minipage}[b]{0.45\textwidth}
+\centering
+\includegraphics[width=\textwidth]{fig/RIDGE_201511_lambda.png}
+\caption{RIDGE lambda 2015. \label{RIDGE_lambda_2015}}
+\end{minipage}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% DEV %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}[H]
+\centering
+\begin{minipage}[b]{0.45\textwidth}
+\includegraphics[width=\textwidth]{fig/RIDGE_195001_dev.png}
+\caption{RIDGE dev 1950. \label{RIDGE_dev_1950}}
+\end{minipage}
+\hfill
+\begin{minipage}[b]{0.45\textwidth}
+\centering
+\includegraphics[width=\textwidth]{fig/RIDGE_201511_dev.png}
+\caption{RIDGE dev 2015. \label{RIDGE_dev_2015}}
+\end{minipage}
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%      						ENET
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{ENET}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% CV %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}[H]
+\centering
+\begin{minipage}[b]{0.45\textwidth}
+\includegraphics[width=\textwidth]{fig/ENET_195001_cv.png}
+\caption{ENET cv 1950. \label{ENET_cv_1950}}
+\end{minipage}
+\hfill
+\begin{minipage}[b]{0.45\textwidth}
+\centering
+\includegraphics[width=\textwidth]{fig/ENET_201511_cv.png}
+\caption{ENET cv 2015. \label{ENET_cv_2015}}
+\end{minipage}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% NORM %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}[H]
+\centering
+\begin{minipage}[b]{0.45\textwidth}
+\includegraphics[width=\textwidth]{fig/ENET_195001_norm.png}
+\caption{ENET norm 1950. \label{ENET_norm_1950}}
+\end{minipage}
+\hfill
+\begin{minipage}[b]{0.45\textwidth}
+\centering
+\includegraphics[width=\textwidth]{fig/ENET_201511_norm.png}
+\caption{ENET norm 2015. \label{ENET_norm_2015}}
+\end{minipage}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% LAMBDA %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}[H]
+\centering
+\begin{minipage}[b]{0.45\textwidth}
+\includegraphics[width=\textwidth]{fig/ENET_195001_lambda.png}
+\caption{ENET lambda 1950. \label{ENET_lambda_1950}}
+\end{minipage}
+\hfill
+\begin{minipage}[b]{0.45\textwidth}
+\centering
+\includegraphics[width=\textwidth]{fig/ENET_201511_lambda.png}
+\caption{ENET lambda 2015. \label{ENET_lambda_2015}}
+\end{minipage}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% DEV %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}[H]
+\centering
+\begin{minipage}[b]{0.45\textwidth}
+\includegraphics[width=\textwidth]{fig/ENET_195001_dev.png}
+\caption{ENET dev 1950. \label{ENET_dev_1950}}
+\end{minipage}
+\hfill
+\begin{minipage}[b]{0.45\textwidth}
+\centering
+\includegraphics[width=\textwidth]{fig/ENET_201511_dev.png}
+\caption{ENET dev 2015. \label{ENET_dev_2015}}
+\end{minipage}
+\end{figure}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%      						A_LASSO
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{ALASSO}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% CV %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}[H]
+\centering
+\begin{minipage}[b]{0.45\textwidth}
+\includegraphics[width=\textwidth]{fig/A_LASSO_195001_cv.png}
+\caption{ALASSO CV 1950. \label{A_LASSO_cv_1950}}
+\end{minipage}
+\hfill
+\begin{minipage}[b]{0.45\textwidth}
+\centering
+\includegraphics[width=\textwidth]{fig/A_LASSO_201511_cv.png}
+\caption{ALASSO cv 2015. \label{A_LASSO_cv_2015}}
+\end{minipage}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% NORM %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}[H]
+\centering
+\begin{minipage}[b]{0.45\textwidth}
+\includegraphics[width=\textwidth]{fig/A_LASSO_195001_norm.png}
+\caption{ALASSO norm 1950. \label{A_LASSO_norm_1950}}
+\end{minipage}
+\hfill
+\begin{minipage}[b]{0.45\textwidth}
+\centering
+\includegraphics[width=\textwidth]{fig/A_LASSO_201511_norm.png}
+\caption{ALASSO norm 2015. \label{A_LASSO_norm_2015}}
+\end{minipage}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% LAMBDA %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}[H]
+\centering
+\begin{minipage}[b]{0.45\textwidth}
+\includegraphics[width=\textwidth]{fig/A_LASSO_195001_lambda.png}
+\caption{ALASSO lambda 1950. \label{A_LASSO_lambda_1950}}
+\end{minipage}
+\hfill
+\begin{minipage}[b]{0.45\textwidth}
+\centering
+\includegraphics[width=\textwidth]{fig/A_LASSO_201511_lambda.png}
+\caption{ALASSO lambda 2015. \label{A_LASSO_lambda_2015}}
+\end{minipage}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% DEV %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}[H]
+\centering
+\begin{minipage}[b]{0.45\textwidth}
+\includegraphics[width=\textwidth]{fig/A_LASSO_195001_dev.png}
+\caption{ALASSO dev 1950. \label{A_LASSO_dev_1950}}
+\end{minipage}
+\hfill
+\begin{minipage}[b]{0.45\textwidth}
+\centering
+\includegraphics[width=\textwidth]{fig/A_LASSO_201511_dev.png}
+\caption{ALASSO dev 2015. \label{A_LASSO_dev_2015}}
+\end{minipage}
+\end{figure}
+%=======
+% \section{Results}
+% \label{sec:sec4.2}
+
+
+
+
+
+
+
+
+
+
+%=========================================================
