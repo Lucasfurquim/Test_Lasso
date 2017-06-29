@@ -1,0 +1,16 @@
+%
+% File: conclusion.tex
+% Author: Ricardo Furquim
+% Description: ??
+%
+\let\textcircled=\pgftextcircled
+\chapter{Conclusions and Further Research}
+\label{chap:conclusion}
+
+\initial{Q}uantitative Finance aims to describe real-market dynamics through mathematical equations. In other words, it is about translating a set of hypotheses about market and agent behavior into numerical prediction. As we have seen there are several different approaches, which one with pros and cons.
+
+Albeit LASSO, Adaptive LASSO, RIDGE and Elastic Net methods seems much more robust than a simple least-square regression, it has not been translated on a much better certainty equivalent. As pointed out, the percentage of explained variance is too small for all regression methods, corroborating with efficiency market hypothesis.  It certainly  the Variable selection and forecasting 
+
+As we also verified is that returns presents strong heteroskedasticity. Statistically, GARCH surely offers a better volatility estimation and forecasting than sample covariance. But it also does not always implies a bigger certainty equivalent, especially when used together with the regularization methods. There are some interesting approaches that try to combine variance forecasting and penalized regression \cite{audrino2016lassoing}  \cite{wilms2016lasso}.
+
+Quantitative investing is a vivid research theme. Finance, however, is not only about mathematics, it is also about people \cite{derman2009financial}. Anyone applying quantitative analysis on finance must always remember that, as people, market's behavior is constantly changing.  
